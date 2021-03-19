@@ -1,0 +1,44 @@
+package lazy_tests
+
+import (
+	"gotest.tools/assert"
+	"gotest.tools/assert/cmp"
+	"sudachen.xyz/pkg/go-forge/lazy"
+	"testing"
+)
+
+func Test_CollectFromChan(t *testing.T) {
+	c := make(chan Color)
+	go func() {
+		for _, x := range colors {
+			c <- x
+		}
+		close(c)
+	}()
+	var e []Color
+	lazy.Chan(c).MustCollect(&e)
+	assert.DeepEqual(t, e, colors)
+}
+
+func Test_CollectFromList(t *testing.T) {
+	var e []Color
+	lazy.List(colors).MustCollect(&e)
+	assert.DeepEqual(t, e, colors)
+}
+
+func Test_CollectFromEmpty(t *testing.T) {
+	var e []Color
+	lazy.List([]Color{}).MustCollect(&e)
+	assert.Assert(t, len(e) == 0)
+}
+
+func Test_CollectAnyFromList(t *testing.T) {
+	e := lazy.List(colors).MustCollectAny()
+	assert.DeepEqual(t, e, colors)
+}
+
+func Test_CollectAnyFromEmpty(t *testing.T) {
+	assert.Assert(t, cmp.Panics(func(){
+		lazy.List([]Color{}).MustCollectAny()
+	}))
+}
