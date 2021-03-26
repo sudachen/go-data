@@ -6,7 +6,7 @@ import (
 	"os/user"
 	"path"
 	"path/filepath"
-	"sudachen.xyz/pkg/go-forge/fu"
+	"sudachen.xyz/pkg/go-data/fu"
 )
 
 const cacheGoFp = ".cache/gofper"

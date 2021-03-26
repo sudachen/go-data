@@ -9,8 +9,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"sudachen.xyz/pkg/go-forge/errors"
-	"sudachen.xyz/pkg/go-forge/fu"
+	"sudachen.xyz/pkg/go-data/errors"
+	"sudachen.xyz/pkg/go-data/fu"
 	"sync"
 )
 

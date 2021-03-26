@@ -3,25 +3,23 @@ package lazy
 import "reflect"
 
 func (zf Source) Filter(f interface{}) Source {
-	return func() Stream {
-		z := zf()
+	return func(xs ...interface{}) Stream {
+		z := zf(xs)
 		fv := reflect.ValueOf(f)
-		return func(index Index) interface{} {
-			if v := z(index); v != NoValue {
-				switch v.(type) {
-				case Fail, EndOfStream:
-					return v
-				default:
-					x := reflect.ValueOf(v)
-					if x.Kind() == reflect.Interface {
-						x = x.Elem()
-					}
-					if fv.Call([]reflect.Value{x})[0].Bool() {
-						return v
-					}
+		return func(next bool) (interface{},int) {
+			switch v,i := z(next); v.(type) {
+			case EndOfStream, struct{}:
+				return v,i
+			default:
+				x := reflect.ValueOf(v)
+				/*if x.Kind() == reflect.Interface {
+					x = x.Elem()
+				}*/
+				if fv.Call([]reflect.Value{x})[0].Bool() {
+					return v,i
 				}
+				return NoValue, i
 			}
-			return NoValue
 		}
 	}
 }

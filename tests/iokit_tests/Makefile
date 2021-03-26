@@ -18,8 +18,8 @@ run-tests-1:
 	./tests.test -test.v=true -test.coverprofile=c.out
 
 run-tests-2:
-	sed -i -e 's:sudachen.xyz/pkg/go-forge/iokit/::g' c.out
-	awk '/\.go/{print "sudachen.xyz/pkg/go-forge/iokit/"$$0}/^mode/{print $$0}' < c.out > gocov.txt
+	sed -i -e 's:sudachen.xyz/pkg/go-data/iokit/::g' c.out
+	awk '/\.go/{print "sudachen.xyz/pkg/go-data/iokit/"$$0}/^mode/{print $$0}' < c.out > gocov.txt
 
 run-tests: run-tests-1 run-tests-2
 

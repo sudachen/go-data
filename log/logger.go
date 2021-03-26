@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package logger offers simple cross platform logging for Windows and Linux.
+// Package log offers simple cross platform logging for Windows and Linux.
 // Available logging endpoints are event log (Windows), syslog (Linux), and
 // an io.Writer.
 package log
@@ -70,11 +70,11 @@ func init() {
 // Init sets up logging and should be called before log functions, usually in
 // the caller's main(). Default log functions can be called before Init(), but log
 // output will only go to stderr (along with a warning).
-// The first call to Init populates the default logger and returns the
-// generated logger, subsequent calls to Init will only return the generated
-// logger.
+// The first call to Init populates the default log and returns the
+// generated log, subsequent calls to Init will only return the generated
+// log.
 // If the logFile passed in also satisfies io.Closer, logFile.Close will be called
-// when closing the logger.
+// when closing the log.
 
 type Config struct {
 	Name      string    // log name
@@ -82,7 +82,7 @@ type Config struct {
 	LogWriter io.Writer // writer to write log
 	LogFile   string    // filename to write log
 	SentryDsn string    // log to sentry
-	Exclusive bool      // do not use as default logger
+	Exclusive bool      // do not use as default log
 }
 
 func (cfg Config) Init() *Logger {
@@ -157,7 +157,7 @@ func (cfg Config) Init() *Logger {
 	return &l
 }
 
-// Close closes the default logger.
+// Close closes the default log.
 func Close() {
 	defaultLogger.Close()
 }
@@ -192,7 +192,7 @@ func (l *Logger) output(s severity, depth int, txt string) {
 
 // Close closes all the underlying log writers, which will flush any cached logs.
 // Any errors from closing the underlying log writers will be printed to stderr.
-// Once Close is called, all future calls to the logger will panic.
+// Once Close is called, all future calls to the log will panic.
 func (l *Logger) Close() {
 	logLock.Lock()
 	defer logLock.Unlock()
@@ -316,7 +316,7 @@ func (l *Logger) Fatalf(format string, v ...interface{}) {
 	os.Exit(1)
 }
 
-// SetFlags sets the output flags for the logger.
+// SetFlags sets the output flags for the log.
 func SetFlags(flag int) {
 	defaultLogger.infoLog.SetFlags(flag)
 	defaultLogger.warningLog.SetFlags(flag)
@@ -324,7 +324,7 @@ func SetFlags(flag int) {
 	//defaultLogger.fatalLog.SetFlags(flag)
 }
 
-// Info uses the default logger and logs with the Info severity.
+// Info uses the default log and logs with the Info severity.
 // Arguments are handled in the manner of fmt.Print.
 func Info(v ...interface{}) {
 	defaultLogger.output(sInfo, 0, fmt.Sprint(v...))
@@ -336,19 +336,19 @@ func InfoDepth(depth int, v ...interface{}) {
 	defaultLogger.output(sInfo, depth, fmt.Sprint(v...))
 }
 
-// Infoln uses the default logger and logs with the Info severity.
+// Infoln uses the default log and logs with the Info severity.
 // Arguments are handled in the manner of fmt.Println.
 func Infoln(v ...interface{}) {
 	defaultLogger.output(sInfo, 0, fmt.Sprintln(v...))
 }
 
-// Infof uses the default logger and logs with the Info severity.
+// Infof uses the default log and logs with the Info severity.
 // Arguments are handled in the manner of fmt.Printf.
 func Infof(format string, v ...interface{}) {
 	defaultLogger.output(sInfo, 0, fmt.Sprintf(format, v...))
 }
 
-// Warning uses the default logger and logs with the Warning severity.
+// Warning uses the default log and logs with the Warning severity.
 // Arguments are handled in the manner of fmt.Print.
 func Warning(v ...interface{}) {
 	defaultLogger.output(sWarning, 0, fmt.Sprint(v...))
@@ -360,19 +360,19 @@ func WarningDepth(depth int, v ...interface{}) {
 	defaultLogger.output(sWarning, depth, fmt.Sprint(v...))
 }
 
-// Warningln uses the default logger and logs with the Warning severity.
+// Warningln uses the default log and logs with the Warning severity.
 // Arguments are handled in the manner of fmt.Println.
 func Warningln(v ...interface{}) {
 	defaultLogger.output(sWarning, 0, fmt.Sprintln(v...))
 }
 
-// Warningf uses the default logger and logs with the Warning severity.
+// Warningf uses the default log and logs with the Warning severity.
 // Arguments are handled in the manner of fmt.Printf.
 func Warningf(format string, v ...interface{}) {
 	defaultLogger.output(sWarning, 0, fmt.Sprintf(format, v...))
 }
 
-// Error uses the default logger and logs with the Error severity.
+// Error uses the default log and logs with the Error severity.
 // Arguments are handled in the manner of fmt.Print.
 func Error(v ...interface{}) {
 	defaultLogger.output(sError, 0, fmt.Sprint(v...))
@@ -384,19 +384,19 @@ func ErrorDepth(depth int, v ...interface{}) {
 	defaultLogger.output(sError, depth, fmt.Sprint(v...))
 }
 
-// Errorln uses the default logger and logs with the Error severity.
+// Errorln uses the default log and logs with the Error severity.
 // Arguments are handled in the manner of fmt.Println.
 func Errorln(v ...interface{}) {
 	defaultLogger.output(sError, 0, fmt.Sprintln(v...))
 }
 
-// Errorf uses the default logger and logs with the Error severity.
+// Errorf uses the default log and logs with the Error severity.
 // Arguments are handled in the manner of fmt.Printf.
 func Errorf(format string, v ...interface{}) {
 	defaultLogger.output(sError, 0, fmt.Sprintf(format, v...))
 }
 
-// Fatalln uses the default logger, logs with the Fatal severity,
+// Fatalln uses the default log, logs with the Fatal severity,
 // and ends with os.Exit(1).
 // Arguments are handled in the manner of fmt.Print.
 func Fatal(v ...interface{}) {
@@ -413,7 +413,7 @@ func FatalDepth(depth int, v ...interface{}) {
 	os.Exit(1)
 }
 
-// Fatalln uses the default logger, logs with the Fatal severity,
+// Fatalln uses the default log, logs with the Fatal severity,
 // and ends with os.Exit(1).
 // Arguments are handled in the manner of fmt.Println.
 func Fatalln(v ...interface{}) {
@@ -422,7 +422,7 @@ func Fatalln(v ...interface{}) {
 	os.Exit(1)
 }
 
-// Fatalf uses the default logger, logs with the Fatal severity,
+// Fatalf uses the default log, logs with the Fatal severity,
 // and ends with os.Exit(1).
 // Arguments are handled in the manner of fmt.Printf.
 func Fatalf(format string, v ...interface{}) {

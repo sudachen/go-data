@@ -1,25 +1,43 @@
 package lazy
 
 import (
-	"math"
-	"sudachen.xyz/pkg/go-forge/errors"
+	"sudachen.xyz/pkg/go-data/errors"
 )
 
-type Index = uint64
-type Stream func(Index) interface{}
-type Source func() Stream
-type Sink func(interface{}) error
+type Source func(...interface{}) Stream
 
-const iniCollectLength = 13
-const CloseSource = Index(math.MaxUint64)
+func (zf Source) Open() Stream { return zf() }
 
-var NoValue interface{} = nil
-type EndOfStream struct{}
-type Fail struct { Err error }
+type Stream func(bool) (interface{},int)
 
-type LazyValue interface {
-	Recycle()
+func (z Stream) Close() {
+	z(false)
 }
 
-var DrainSucceed interface{} = EndOfStream{}
-var DrainFailed interface{} = Fail{errors.New("drain failed")}
+func (z Stream) Next() interface{} {
+	v,_ := z(true)
+	return v
+}
+
+type EndOfStream struct{ Err error }
+
+func Fail(err error) interface{} { return EndOfStream{err} }
+
+var EoS interface{} = EndOfStream{}
+var NoValue interface{} = struct{}{}
+
+var S Source = func(xs ...interface{}) Stream {
+	for _, s := range xs {
+		if f, ok := s.(func()Stream); ok {
+			return f()
+		}
+	}
+	return Error(errors.New("there is no stream provider function"))
+}
+
+func (zf Source) Link(xf Source) Source {
+	return func(xs ...interface{}) Stream {
+		return xf(func()Stream{ return zf(xs...) })
+	}
+}
+

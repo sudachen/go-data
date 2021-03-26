@@ -2,11 +2,11 @@ package iokit_tests
 
 import (
 	"fmt"
-	"gotest.tools/assert"
+	"gotest.tools/v3/assert"
 	"io/ioutil"
 	"math/rand"
 	"os"
-	"sudachen.xyz/pkg/go-forge/iokit"
+	"sudachen.xyz/pkg/go-data/iokit"
 	"testing"
 )
 

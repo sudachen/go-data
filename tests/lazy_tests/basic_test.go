@@ -38,4 +38,3 @@ var colors = []Color{
 	{"Olive", 29},
 	{"Cyan", 30},
 }
-

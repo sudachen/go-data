@@ -1,8 +1,8 @@
 package fu_tests
 
 import (
-	"gotest.tools/assert"
-	"sudachen.xyz/pkg/go-forge/fu"
+	"gotest.tools/v3/assert"
+	"sudachen.xyz/pkg/go-data/fu"
 	"testing"
 )
 

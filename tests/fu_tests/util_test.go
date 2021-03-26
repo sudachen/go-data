@@ -1,11 +1,11 @@
 package fu_tests
 
 import (
-	"gotest.tools/assert"
-	"gotest.tools/assert/cmp"
+	"gotest.tools/v3/assert"
+	"gotest.tools/v3/assert/cmp"
 	"reflect"
 	"strings"
-	"sudachen.xyz/pkg/go-forge/fu"
+	"sudachen.xyz/pkg/go-data/fu"
 	"testing"
 )
 

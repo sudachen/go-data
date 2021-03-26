@@ -2,28 +2,24 @@ package lazy
 
 import (
 	"reflect"
-	"sudachen.xyz/pkg/go-forge/fu"
-	"sync"
 )
 
 func (zf Source) Map(f interface{}) Source {
-	return func() Stream {
-		z := zf()
+	return func(xs ...interface{}) Stream {
+		z := zf(xs...)
 		fv := reflect.ValueOf(f)
-		return func(index Index) interface{} {
-			if v := z(index); v != NoValue {
-				switch v.(type) {
-				case Fail, EndOfStream:
-					return v
-				default:
-					x := reflect.ValueOf(v)
-					if x.Kind() == reflect.Interface {
-						x = x.Elem()
-					}
-					return fv.Call([]reflect.Value{x})[0].Interface()
-				}
+		return func(next bool) (interface{}, int) {
+			switch v,i := z(next); v.(type) {
+			case EndOfStream, struct{}:
+				return v, i
+			default:
+				x := reflect.ValueOf(v)
+				/*for x.Kind() == reflect.Interface {
+					x = x.Elem()
+				}*/
+				//fmt.Println(x.Interface(), x.Type())
+				return fv.Call([]reflect.Value{x})[0].Interface(), i
 			}
-			return NoValue
 		}
 	}
 }
@@ -34,36 +30,33 @@ func (zf Source) Map(f interface{}) Source {
 // 2. maps all as fx(stream value)
 
 func (zf Source) Map1(fx interface{}) Source {
-	return func() Stream {
-		z := zf()
-		var fv reflect.Value
-		ctxf := fu.AtomicFlag{}
-		mux := sync.Mutex{}
-		return func(index Index) interface{} {
-			if v := z(index); v != NoValue {
-				switch v.(type) {
-				case Fail, EndOfStream:
-					return v
-				default:
-					x := reflect.ValueOf(v)
-					if x.Kind() == reflect.Interface {
-						x = x.Elem()
+	return func(xs ...interface{}) Stream {
+		z := zf(xs...)
+		var fv func(interface{}) interface{}
+		return func(next bool) (interface{}, int) {
+			switch v, i := z(next); v.(type) {
+			case EndOfStream, struct{}:
+				return v,i
+			default:
+				if fv == nil {
+					f := reflect.ValueOf(fx).Call([]reflect.Value{reflect.ValueOf(v)})[0]
+					var ok bool
+					for f.Kind() == reflect.Interface {
+						f = f.Elem()
 					}
-					if !ctxf.State() {
-						mux.Lock()
-						if !ctxf.State() {
-							fv = reflect.ValueOf(fx).Call([]reflect.Value{x})[0]
-							if fv.Kind() == reflect.Interface {
-								fv = fv.Elem()
-							}
+					if fv, ok = f.Interface().(func(interface{}) interface{}); !ok {
+						fv = func(v interface{}) interface{} {
+							x := reflect.ValueOf(v)
+							/*if x.Kind() == reflect.Interface {
+								x = x.Elem()
+							}*/
+							return f.Call([]reflect.Value{x})[0].Interface()
 						}
-						ctxf.Set()
-						mux.Unlock()
 					}
-					return fv.Call([]reflect.Value{x})[0].Interface()
 				}
+				return fv(v),i
 			}
-			return NoValue
 		}
 	}
 }
+

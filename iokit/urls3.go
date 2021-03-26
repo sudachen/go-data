@@ -2,7 +2,7 @@ package iokit
 
 import (
 	"io"
-	"sudachen.xyz/pkg/go-forge/iokit/s3p"
+	"sudachen.xyz/pkg/go-data/iokit/s3p"
 )
 
 type S3Url string

@@ -3,7 +3,7 @@ package iokit
 import (
 	"io"
 	"strings"
-	"sudachen.xyz/pkg/go-forge/fu"
+	"sudachen.xyz/pkg/go-data/fu"
 )
 
 type IoUrl struct {

@@ -1,13 +1,13 @@
 package lazy
 
 func Error(err error, z ...Stream) Stream {
-	return func(dx Index)interface{} {
-		if dx == CloseSource && len(z) > 0 {
-			for _,zz := range z{
-				zz(CloseSource)
+	return func(next bool) (interface{},int) {
+		if !next {
+			for _, zz := range z {
+				zz.Close()
 			}
 		}
-		return err
+		return EndOfStream{err}, 0
 	}
 }
 
@@ -16,5 +16,19 @@ func Wrap(e interface{}) Stream {
 		return stream
 	} else {
 		return Error(e.(error))
+	}
+}
+
+func ErrorSource(e error) Source {
+	return func(...interface{}) Stream {
+		return Error(e)
+	}
+}
+
+func ErrorSink(e error) WorkerFactory {
+	return func(int)[]Worker{
+		return []Worker{func(int, interface{}, error)error{
+			return e
+		}}
 	}
 }

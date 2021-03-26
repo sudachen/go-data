@@ -10,7 +10,7 @@ import (
 	"crypto/sha512"
 	"encoding/binary"
 	"io"
-	"sudachen.xyz/pkg/go-forge/errors"
+	"sudachen.xyz/pkg/go-data/errors"
 )
 
 func Decrypt(password string, data []byte) ([]byte, error) {

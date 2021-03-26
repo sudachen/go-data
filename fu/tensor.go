@@ -223,10 +223,6 @@ type tensor interface {
 
 type Tensor struct{ tensor }
 
-//	gets base64-encoded compressed stream as a string prefixed by \xE2\x9C\x97` (✗`)
-func DecodeTensor(string) (t Tensor, err error) {
-	return
-}
 
 func (t Tensor) Width() int {
 	_, _, w := t.Dimension()
@@ -249,7 +245,7 @@ func (t Tensor) String() (str string) {
 
 func (t Tensor) Encode(compress bool) (str string) {
 	//t.Magic()
-	//t.Dimension()
+	//t.Dim()
 	//t.Values()
 	//gzip => base64
 	return

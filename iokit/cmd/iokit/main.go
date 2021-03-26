@@ -4,8 +4,8 @@ import (
 	"github.com/urfave/cli/v2"
 	"log"
 	"os"
-	"sudachen.xyz/pkg/go-forge/fu"
-	"sudachen.xyz/pkg/go-forge/iokit"
+	"sudachen.xyz/pkg/go-data/fu"
+	"sudachen.xyz/pkg/go-data/iokit"
 )
 
 func main() {

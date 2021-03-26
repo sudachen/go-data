@@ -1,9 +1,9 @@
 package fu_tests
 
 import (
-	"gotest.tools/assert"
-	"gotest.tools/assert/cmp"
-	"sudachen.xyz/pkg/go-forge/fu"
+	"gotest.tools/v3/assert"
+	"gotest.tools/v3/assert/cmp"
+	"sudachen.xyz/pkg/go-data/fu"
 	"sync"
 	"testing"
 )

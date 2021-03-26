@@ -34,3 +34,12 @@ var Float64Zero = reflect.ValueOf(float64(0))
 var TsZero = reflect.ValueOf(time.Time{})
 var True = reflect.ValueOf(true)
 var False = reflect.ValueOf(false)
+
+
+func TypeOf(x interface{}) reflect.Type {
+	v := reflect.ValueOf(x)
+	for v.Kind() == reflect.Interface && v.IsValid() {
+		v = v.Elem()
+	}
+	return v.Type()
+}

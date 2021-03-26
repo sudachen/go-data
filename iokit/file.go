@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sudachen.xyz/pkg/go-forge/errors"
+	"sudachen.xyz/pkg/go-data/errors"
 )
 
 func File(path string) StrictInputOutput {

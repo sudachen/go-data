@@ -2,8 +2,10 @@ package lazy
 
 import (
 	"reflect"
-	"sudachen.xyz/pkg/go-forge/errors"
+	"sudachen.xyz/pkg/go-data/errors"
 )
+
+const iniCollectLength = 13
 
 //
 // e := make([]int,0,0)
@@ -11,44 +13,55 @@ import (
 // Source().MustCollect(&e)
 //
 
-
-func (zf Source) Collect(to interface{}) error {
+func SinkTo(to interface{}, reserve ...int) WorkerFactory {
 	values := reflect.ValueOf(to).Elem()
-	err := zf.Drain(func(v interface{}) error {
-		if v != DrainFailed && v != DrainSucceed {
+	return Sink(func(v interface{}, err error)(_ error) {
+		if v != nil {
 			values = reflect.Append(values, reflect.ValueOf(v))
+		} else if err == nil {
+			reflect.ValueOf(to).Elem().Set(values)
 		}
-		return nil
+		return
 	})
-	if err != nil { return err}
-	reflect.ValueOf(to).Elem().Set(values)
-	return nil
 }
 
-func (zf Source) MustCollect(to interface{}) {
-	err := zf.Collect(to)
-	if err != nil { panic(errors.PanicBtrace{err}) }
+func (zf Source) Collect(to interface{}, reserve ...int) error {
+	return zf.Drain(SinkTo(to, reserve...))
 }
 
-func (zf Source) CollectAny() (interface{},error) {
+func (zf Source) MustCollect(to interface{}, reserve ...int) {
+	err := zf.Collect(to, reserve...)
+	if err != nil {
+		panic(errors.PanicBtrace{err})
+	}
+}
+
+func (zf Source) CollectAny(concurrency ...int) (interface{}, error) {
 	var to reflect.Value
-	err := zf.Drain(func(v interface{}) error {
-		if v != DrainFailed && v != DrainSucceed {
+	err := zf.Drain(Sink(func(v interface{},err error)(_ error){
+		if v != nil {
 			x := reflect.ValueOf(v)
 			if !to.IsValid() {
 				to = reflect.MakeSlice(reflect.SliceOf(x.Type()), 0, iniCollectLength)
 			}
 			to = reflect.Append(to, x)
 		}
-		return nil
-	})
-	if err != nil { return nil, err }
-	if !to.IsValid() { return nil, errors.New("no values collected") }
+		return
+	}), concurrency...)
+	if err != nil {
+		return nil, err
+	}
+	if !to.IsValid() {
+		return nil, errors.New("nothing to collect")
+	}
 	return to.Interface(), nil
 }
 
-func (zf Source) MustCollectAny() interface{} {
-	ret, err := zf.CollectAny()
-	if err != nil { panic(errors.PanicBtrace{err}) }
+func (zf Source) MustCollectAny(concurrency ...int) interface{} {
+	ret, err := zf.CollectAny(concurrency...)
+	if err != nil {
+		panic(errors.PanicBtrace{err})
+	}
 	return ret
 }
+

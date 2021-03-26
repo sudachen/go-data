@@ -2,7 +2,7 @@ package verbose
 
 import (
 	"fmt"
-	"sudachen.xyz/pkg/go-forge/log"
+	"sudachen.xyz/pkg/go-data/log"
 )
 
 type VerboseKind int

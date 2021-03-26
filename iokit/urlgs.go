@@ -2,7 +2,7 @@ package iokit
 
 import (
 	"io"
-	"sudachen.xyz/pkg/go-forge/iokit/gcp"
+	"sudachen.xyz/pkg/go-data/iokit/gcp"
 )
 
 type GsUrl string
