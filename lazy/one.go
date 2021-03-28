@@ -19,7 +19,7 @@ func (zf Source) GetOne() (ret interface{}, err error) {
 func (zf Source) MustGetOne() interface{} {
 	x, err := zf.GetOne()
 	if err != nil {
-		panic(errors.PanicBtrace{Err: err})
+		panic(errors.Panic{Err: err})
 	}
 	return x
 }

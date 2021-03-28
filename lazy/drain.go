@@ -70,7 +70,7 @@ func concurrentDrain(zf Source, ws []Worker) error {
 
 func (zf Source) MustDrain(wf WorkerFactory, concurrency ...int) {
 	if err := zf.Drain(wf, concurrency...); err != nil {
-		panic(errors.PanicBtrace{Err: err})
+		panic(errors.Panic{Err: err})
 	}
 }
 

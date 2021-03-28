@@ -32,7 +32,7 @@ func (zf Source) Collect(to interface{}, reserve ...int) error {
 func (zf Source) MustCollect(to interface{}, reserve ...int) {
 	err := zf.Collect(to, reserve...)
 	if err != nil {
-		panic(errors.PanicBtrace{err})
+		panic(errors.Panic{err})
 	}
 }
 
@@ -60,7 +60,7 @@ func (zf Source) CollectAny(concurrency ...int) (interface{}, error) {
 func (zf Source) MustCollectAny(concurrency ...int) interface{} {
 	ret, err := zf.CollectAny(concurrency...)
 	if err != nil {
-		panic(errors.PanicBtrace{err})
+		panic(errors.Panic{err})
 	}
 	return ret
 }

@@ -9,7 +9,7 @@ import (
 	"sudachen.xyz/pkg/go-data/fu"
 )
 
-const cacheGoFp = ".cache/gofper"
+const cacheGoData = ".cache/xyz/go-data/"
 
 var FullCacheDir string
 
@@ -22,7 +22,7 @@ func init() {
 	if homedir == "" {
 		homedir = "/tmp"
 	}
-	FullCacheDir, _ = filepath.Abs(filepath.Join(homedir, cacheGoFp))
+	FullCacheDir, _ = filepath.Abs(filepath.Join(homedir, cacheGoData))
 }
 
 func CacheDir(d string) string {

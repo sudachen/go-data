@@ -5,9 +5,9 @@ import (
 	"strings"
 )
 
-type PanicBtrace struct{ Err error }
+type Panic struct{ Err error }
 
-func (x PanicBtrace) stringify(indepth bool) string {
+func (x Panic) stringify(indepth bool) string {
 	s, e := stringifyError(x.Err)
 	ns := []string{s}
 	for e != nil && indepth {
@@ -17,15 +17,15 @@ func (x PanicBtrace) stringify(indepth bool) string {
 	return strings.Join(ns, "\n")
 }
 
-func (x PanicBtrace) Error() string {
+func (x Panic) Error() string {
 	return x.stringify(false)
 }
 
-func (x PanicBtrace) String() string {
+func (x Panic) String() string {
 	return x.stringify(true)
 }
 
-func (x PanicBtrace) Unwrap() error {
+func (x Panic) Unwrap() error {
 	if w, ok := x.Err.(xerrors.Wrapper); ok {
 		return w.Unwrap()
 	}

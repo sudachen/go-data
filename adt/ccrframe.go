@@ -99,6 +99,7 @@ func (fr *ccrframe) Lazy() lazy.Source {
 	return lazyFrame(fr)
 }
 
+
 type ccrseq struct {
 	fr *ccrframe
 	col int

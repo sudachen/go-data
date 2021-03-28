@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"sudachen.xyz/pkg/go-data/errors"
-	"sudachen.xyz/pkg/go-data/fu"
 )
 
 type Cell struct {
@@ -15,7 +14,7 @@ type Cell struct {
 }
 
 func (c Cell) Type() reflect.Type {
-	return fu.TypeOf(c.Val)
+	return reflect.TypeOf(c.Val)
 }
 
 func (c Cell) Na() bool {
@@ -27,16 +26,17 @@ func (c Cell) Text() string {
 	case string:
 		return v
 	case Tensor:
-		s := []string{}
+		var s []string
+		dim := v.Dimension()
 		for i := 0; i < 4; i++ {
-			if i == 3 || i >= v.Volume() {
+			if i == 3 || i >= dim.Volume() {
 				s = append(s, ">")
 				break
-			} else if i < v.Volume() {
+			} else if i < dim.Volume() {
 				s = append(s, fmt.Sprint(v.Index(i)))
 			}
 		}
-		ch, h, w := v.Dimension()
+		ch, h, w := dim.CHW()
 		return fmt.Sprintf("(%dx%dx%d){%v}", ch, h, w, strings.Join(s, ","))
 	default:
 		return fmt.Sprint(v)
@@ -50,7 +50,7 @@ func (c Cell) Tensor() Tensor {
 	case Tensor:
 		return v
 	default:
-		panic(errors.PanicBtrace{errors.Errorf("can't convert %v to Tensor", reflect.TypeOf(c.Val))})
+		panic(errors.Panic{errors.Errorf("can't convert %v to Tensor", reflect.TypeOf(c.Val))})
 	}
 }
 
@@ -117,7 +117,7 @@ func (c Cell) Int64() int64 {
 		if c.Na() {
 			return 0
 		}
-		panic(errors.PanicBtrace{errors.Errorf("can't convert %v to int", reflect.TypeOf(c.Val))})
+		panic(errors.Panic{errors.Errorf("can't convert %v to int", reflect.TypeOf(c.Val))})
 	}
 }
 
@@ -157,7 +157,7 @@ func (c Cell) Uint64() uint64 {
 		if c.Na() {
 			return 0
 		}
-		panic(errors.PanicBtrace{errors.Errorf("can't convert %v to int", reflect.TypeOf(c.Val))})
+		panic(errors.Panic{errors.Errorf("can't convert %v to int", reflect.TypeOf(c.Val))})
 	}
 }
 
@@ -197,6 +197,6 @@ func (c Cell) Float64() float64 {
 		if c.Na() {
 			return math.NaN()
 		}
-		panic(errors.PanicBtrace{errors.Errorf("can't convert %v to int", reflect.TypeOf(c.Val))})
+		panic(errors.Panic{errors.Errorf("can't convert %v to int", reflect.TypeOf(c.Val))})
 	}
 }

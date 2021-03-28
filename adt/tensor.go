@@ -7,12 +7,12 @@ import (
 
 type Dim struct{ Channels, Height, Width int }
 
-func (d Dim) Volume() int              { return d.Channels * d.Width * d.Height }
-func (d Dim) Dimension() (c, h, w int) { return d.Channels, d.Height, d.Width }
+func (d Dim) Volume() int        { return d.Channels * d.Width * d.Height }
+func (d Dim) CHW() (c, h, w int) { return d.Channels, d.Height, d.Width }
+func (d Dim) Dimension() Dim     { return d }
 
 type AnyTensor interface {
-	Dimension() (c, h, w int)
-	Volume() int
+	Dimension() Dim
 	Type() reflect.Type
 	Magic() byte
 	Values() interface{}
@@ -26,7 +26,7 @@ type AnyTensor interface {
 type Tensor struct{ AnyTensor }
 
 func (t Tensor) String() string {
-	c, h, w := t.Dimension()
+	c, h, w := t.Dimension().CHW()
 	return fmt.Sprintf("{%dx%dx%d}",c,h,w)
 }
 

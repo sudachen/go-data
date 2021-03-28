@@ -23,7 +23,7 @@ func (e Enum) String() string {
 	return e.Text
 }
 
-// Enum defines enumerated meta-column with the Enum tipe
+// Enum defines enumerated meta-column with the Enum type
 func (e Enumset) Enum() Meta {
 	return Enumerator{e, &sync.Mutex{}, len(e) != 0}
 }

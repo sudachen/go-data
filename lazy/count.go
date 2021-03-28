@@ -17,7 +17,7 @@ func (zf Source) Count() (count int, err error) {
 func (zf Source) MustCount() int {
 	count, err := zf.Count()
 	if err != nil {
-		panic(errors.PanicBtrace{err})
+		panic(errors.Panic{err})
 	}
 	return count
 }
